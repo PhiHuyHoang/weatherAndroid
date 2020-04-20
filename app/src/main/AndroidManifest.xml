@@ -10,10 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/CustomTheme"
        >
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/api_search"
-            />
         <activity
             android:name=".MainActivity">
             <intent-filter>

@@ -10,11 +10,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.google.android.gms.common.api.Status;
-//import com.google.android.gms.location.places.AutocompleteFilter;
-//import com.google.android.gms.location.places.Place;
-//import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-//import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +28,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     String CITY = "budapest,hu";
-    String API = getString(R.string.api_weather);
+        String API_WEATHER = getString(R.string.api_weather);
     String API_SEARCH = getString(R.string.api_search);
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -51,32 +52,35 @@ public class MainActivity extends AppCompatActivity {
         pressureTxt = findViewById(R.id.pressure);
         humidityTxt = findViewById(R.id.humidity);
 
+        // Initialize the SDK
+        Places.initialize(getApplicationContext(), API_SEARCH);
 
+        // Create a new Places client instance
+        PlacesClient placesClient = Places.createClient(this);
 
-//        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-//                getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-//
-//        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-//                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
-//                .build();
-//        autocompleteFragment.setFilter(typeFilter);
-//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//            @Override
-//            public void onPlaceSelected(Place place) {
-//                // TODO: Get info about the selected place.
-//                Toast.makeText(MainActivity.this,
-//                        "Place: " + place.getName(),
-//                        Toast.LENGTH_LONG).show();
-//                Log.i(TAG, "Place: " + place.getName() );
-//            }
-//            @Override
-//            public void onError(Status status) {
-//                // TODO: Handle the error.
-//                Log.i(TAG, "An error occurred: " + status);
-//            }
-//        });
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
 
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Toast.makeText(MainActivity.this, "Place: " + place.getName() + ", " + place.getId(),
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
 
         new weatherTask().execute();
     }
@@ -94,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         protected String doInBackground(String... args) {
             HttpHandler sh = new HttpHandler();
-            String response = sh.makeServiceCall("https://api.openweathermap.org/data/2.5/weather?q=" + CITY + "&units=metric&appid=" + API);
+            String response = sh.makeServiceCall("https://api.openweathermap.org/data/2.5/weather?q=" + CITY + "&units=metric&appid=" + API_WEATHER);
             return response;
         }
 

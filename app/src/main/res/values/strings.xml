@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Weather</string>
-    <string name="api_search">MYKEY</string>
+    <string name="api_search">AIzaSyCicHa_cG_7EK6lF18JsMtms0cXVkdY1yM</string>
     <string name="api_weather">8118ed6ee68db2debfaaa5a44c832918</string>
 </resources>
