@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAG, "Place: " + place.getName() + ", " );
                 Toast.makeText(MainActivity.this, "Place: " + place.getName() + ", " + place.getId(),
                         Toast.LENGTH_LONG).show();
             }
